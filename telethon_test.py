@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import yaml
 from telethon import TelegramClient
+import re
+from telethon.tl.functions.channels import JoinChannelRequest
+from telethon.tl.functions.messages import ImportChatInviteRequest
 
 with open("config.yaml", 'r') as f:
     config = yaml.safe_load(f)
@@ -53,8 +56,30 @@ with TelegramClient(f"telegram_session", api_id, api_hash) as client:
     x = client.loop.run_until_complete(get_entity_chat(client, target_entity))
 
 # %%
-# df = pd.DataFrame(x)
+df = pd.DataFrame(x)
 
 # %%
 # with TelegramClient(f"telegram_session", api_id, api_hash) as client:
 #     y = client.loop.run_until_complete(get_entity_chat(client, "https://t.me/+V1xs8Ht67Ec2MTcx"))
+#%%
+with TelegramClient(f"telegram_session", api_id, api_hash) as client:
+    # client.loop.run_until_complete(
+    #     client(ImportChatInviteRequest("V1xs8Ht67Ec2MTcx"))
+    # )
+    y = client.loop.run_until_complete(get_entity_chat(client, "https://t.me/+V1xs8Ht67Ec2MTcx"))
+#%%
+df2 = pd.DataFrame(y)
+#%%
+pattern = r'(?:https?://)?t\.me/(?:\+|joinchat/)([A-Za-z0-9_-]+)'
+def parse_group_id(text):
+    matches = re.findall(pattern, text)
+    return matches
+#%%
+df["g_ids"] = df.text.apply(parse_group_id)
+
+
+
+
+
+#%%
+

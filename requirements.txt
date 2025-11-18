@@ -3,3 +3,6 @@ cryptg
 pillow
 aiohttp
 hachoir
+pandas
+pyyaml
+telethon
